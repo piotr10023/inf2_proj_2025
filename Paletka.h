@@ -14,6 +14,11 @@ public:
     // Konstruktor
     Paletka(float px, float py, float szer, float wys, float speed);
 
+    void moveLeft();
+    void moveRight();
+    void clampToBounds(float width);
+
+
     // Rysowanie
     void draw(sf::RenderTarget& target);
 
