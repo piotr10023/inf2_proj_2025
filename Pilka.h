@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Paletka; // wymagane!
+class Paletka; 
 
 class Pilka {
 private:
@@ -14,6 +14,8 @@ private:
 
 public:
     Pilka(float px, float py, float svx, float svy, float r);
+    void setVy(float newVy) { vy = newVy; }
+
 
     void move();
     void collideWalls(float width, float height);
