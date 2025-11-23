@@ -9,13 +9,9 @@ Paletka::Paletka(float px, float py, float szer, float wys, float speed)
     predkosc = speed;
 
     shape.setSize({ szerokosc, wysokosc });
-    shape.setOrigin(szerokosc / 2, wysokosc / 2);
+    shape.setOrigin(szerokosc / 2.f, wysokosc / 2.f);
     shape.setPosition(x, y);
     shape.setFillColor(sf::Color::White);
-}
-
-void Paletka::draw(sf::RenderTarget& target) {
-    target.draw(shape);
 }
 
 void Paletka::moveLeft() {
@@ -31,12 +27,15 @@ void Paletka::moveRight() {
 void Paletka::clampToBounds(float width) {
     float half = szerokosc / 2.f;
 
-    if (x - half < 0) {
+    if (x - half < 0)
         x = half;
-    }
-    if (x + half > width) {
+
+    if (x + half > width)
         x = width - half;
-    }
 
     shape.setPosition(x, y);
+}
+
+void Paletka::draw(sf::RenderTarget& target) {
+    target.draw(shape);
 }

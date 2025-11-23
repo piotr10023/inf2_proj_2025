@@ -1,4 +1,4 @@
-
+#pragma once
 #include <SFML/Graphics.hpp>
 
 class Paletka {
@@ -11,19 +11,16 @@ private:
     sf::RectangleShape shape;
 
 public:
-    // Konstruktor
     Paletka(float px, float py, float szer, float wys, float speed);
 
     void moveLeft();
     void moveRight();
     void clampToBounds(float width);
 
-
-    // Rysowanie
     void draw(sf::RenderTarget& target);
 
-    // Gettery (na razie tylko podstawowe)
     float getX() const { return x; }
     float getY() const { return y; }
+    float getSzerokosc() const { return szerokosc; }
+    float getWysokosc() const { return wysokosc; }
 };
-
