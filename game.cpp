@@ -1,6 +1,6 @@
 #include "Game.h"
 #include <algorithm>
-
+#include <iostream>
 
 Game::Game()
     : m_paletka(400.f, 550.f, 120.f, 20.f, 8.f),
@@ -13,10 +13,10 @@ void Game::generujBloki()
 {
     const int ILOSC_KOLUMN = 6;
     const int ILOSC_WIERSZY = 7;
-    const float ROZMIAR_Y = 25.f;
+    const float ROZ_Y = 25.f;
     const float PRZERWA = 2.f;
     const float startY = 50.f;
-    const float ROZMIAR_X = (800.f - (ILOSC_KOLUMN - 1) * PRZERWA) / ILOSC_KOLUMN;
+    const float ROZ_X = (800.f - (ILOSC_KOLUMN - 1) * PRZERWA) / ILOSC_KOLUMN;
 
     m_bloki.clear();
 
@@ -24,45 +24,47 @@ void Game::generujBloki()
     {
         for (int x = 0; x < ILOSC_KOLUMN; x++)
         {
-            float posX = x * (ROZMIAR_X + PRZERWA);
-            float posY = y * (ROZMIAR_Y + PRZERWA) + startY;
+            float posX = x * (ROZ_X + PRZERWA);
+            float posY = y * (ROZ_Y + PRZERWA) + startY;
 
             int L = (y < 1) ? 3 : (y < 3) ? 2 : 1;
 
             m_bloki.emplace_back(
                 sf::Vector2f(posX, posY),
-                sf::Vector2f(ROZMIAR_X, ROZMIAR_Y),
+                sf::Vector2f(ROZ_X, ROZ_Y),
                 L
             );
         }
     }
 }
 
+void Game::saveSnapshot()
+{
+    m_snapshot.capture(m_paletka, m_pilka, m_bloki);
+}
+
 void Game::update(sf::Time dt)
 {
-    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+    {
+        saveSnapshot();
+    }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
         sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    {
         m_paletka.moveLeft();
-    }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
         sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    {
         m_paletka.moveRight();
-    }
 
     m_paletka.clampToBounds(800);
 
-    
     m_pilka.move();
     m_pilka.collideWalls(800, 600);
 
-    
-    m_pilka.collidePaddle(m_paletka);  
+    m_pilka.collidePaddle(m_paletka);
 
-    
     for (auto& blok : m_bloki)
     {
         if (!blok.isDestroyed() &&
@@ -73,13 +75,9 @@ void Game::update(sf::Time dt)
         }
     }
 
-    
     m_bloki.erase(
-        std::remove_if(
-            m_bloki.begin(),
-            m_bloki.end(),
-            [](Stone& s) { return s.isDestroyed(); }
-        ),
+        std::remove_if(m_bloki.begin(), m_bloki.end(),
+            [](Stone& s) { return s.isDestroyed(); }),
         m_bloki.end()
     );
 }
