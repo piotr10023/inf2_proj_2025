@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Paletka; 
+class Paletka;
 
 class Pilka {
 private:
@@ -14,8 +14,6 @@ private:
 
 public:
     Pilka(float px, float py, float svx, float svy, float r);
-    void setVy(float newVy) { vy = newVy; }
-
 
     void move();
     void collideWalls(float width, float height);
@@ -28,4 +26,10 @@ public:
     float getVx() const { return vx; }
     float getVy() const { return vy; }
     float getRadius() const { return radius; }
+
+    void setVx(float newVx) { vx = newVx; }
+    void setVy(float newVy) { vy = newVy; }
+
+
+    sf::FloatRect getGlobalBounds() const { return shape.getGlobalBounds(); }
 };

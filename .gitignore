@@ -1,0 +1,23 @@
+# Visual Studio folder
+.vs/
+*.slnx
+
+# Build directories
+x64/
+Debug/
+Release/
+
+# Compiled object files
+*.obj
+*.iobj
+*.ipdb
+*.pdb
+*.tlog
+*.log
+
+# Executables
+*.exe
+
+# Cache
+*.cache
+*.VC.db

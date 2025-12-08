@@ -36,6 +36,8 @@ void Paletka::clampToBounds(float width) {
     shape.setPosition(x, y);
 }
 
+
+
 void Paletka::draw(sf::RenderTarget& target) {
     target.draw(shape);
 }
