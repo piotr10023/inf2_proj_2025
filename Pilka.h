@@ -32,4 +32,8 @@ public:
 
 
     sf::FloatRect getGlobalBounds() const { return shape.getGlobalBounds(); }
+
+    void setPosition(float px, float py) { x = px; y = py; shape.setPosition(x, y); }
+    void setVelocity(float nvx, float nvy) { vx = nvx; vy = nvy; }
+
 };

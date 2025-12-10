@@ -23,4 +23,8 @@ public:
     void render(sf::RenderTarget& target);
 
     void saveSnapshot(); 
+
+    bool saveGame(const std::string& path);
+    bool loadGame(const std::string& path);
+
 };

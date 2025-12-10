@@ -1,89 +1,144 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <optional>
+
 #include "Menu.h"
 #include "Game.h"
+#include "GameSnapshot.h"
 
-enum class GameState
-{
+enum class GameState {
     Menu,
     Playing,
+    Scores,
     Exiting
 };
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Arkanoid");
+    sf::RenderWindow window(
+        sf::VideoMode(800, 600),
+        "Arkanoid – projekt"
+    );
+
     window.setFramerateLimit(60);
 
+    // MENU
     Menu menu(window.getSize().x, window.getSize().y);
+
+    // GRA
     Game game;
 
+    // Aktualny stan
     GameState currentState = GameState::Menu;
 
-    sf::Clock deltaClock;
+    sf::Clock clock;
 
     while (window.isOpen())
     {
-        sf::Event event;
-
-        while (window.pollEvent(event))
+        // Obs³uga zdarzeñ
+        while (const std::optional ev = window.pollEvent())
         {
-            if (event.type == sf::Event::Closed)
+            const auto& event = *ev;
+
+            // Wyjœcie z programu
+            if (event.is<sf::Event::Closed>())
                 window.close();
 
-            
-            if (currentState == GameState::Menu &&
-                event.type == sf::Event::KeyPressed)
+            // Obs³uga klawiatury
+            if (const auto* key = event.getIf<sf::Event::KeyPressed>())
             {
-                if (event.key.code == sf::Keyboard::Up)
-                    menu.przesunG();
-
-                if (event.key.code == sf::Keyboard::Down)
-                    menu.przesunD();
-
-                if (event.key.code == sf::Keyboard::Enter)
+                // -------------------------
+                //      MENU
+                // -------------------------
+                if (currentState == GameState::Menu)
                 {
-                    int pick = menu.getSelectedItem();
+                    if (key->scancode == sf::Keyboard::Scancode::Up)
+                        menu.przesunG();
 
-                    if (pick == 0)     
-                        currentState = GameState::Playing;
+                    if (key->scancode == sf::Keyboard::Scancode::Down)
+                        menu.przesunD();
 
-                    if (pick == 1)     
-                        ; 
+                    if (key->scancode == sf::Keyboard::Scancode::Enter)
+                    {
+                        int id = menu.getSelectedItem();
 
-                    if (pick == 2)      
-                        currentState = GameState::Exiting;
+                        if (id == 0)               // NOWA GRA
+                            currentState = GameState::Playing;
+
+                        else if (id == 1)          // SCORES
+                            currentState = GameState::Scores;
+
+                        else if (id == 2)          // EXIT
+                            window.close();
+                    }
                 }
-            }
 
-            
-            if (currentState == GameState::Playing &&
-                event.type == sf::Event::KeyPressed)
-            {
-                if (event.key.code == sf::Keyboard::Escape)
-                    currentState = GameState::Menu;
+                // -------------------------
+                //       PLAYING
+                // -------------------------
+                else if (currentState == GameState::Playing)
+                {
+                    if (key->scancode == sf::Keyboard::Scancode::Escape)
+                    {
+                        currentState = GameState::Menu;
+                    }
+
+                    // ZAPIS GRY
+                    if (key->scancode == sf::Keyboard::Scancode::S)
+                    {
+                        game.saveGame("savegame.txt");
+                    }
+
+                    // WCZYTANIE GRY
+                    if (key->scancode == sf::Keyboard::Scancode::L)
+                    {
+                        game.loadGame("savegame.txt");
+                    }
+                }
+
+                // -------------------------
+                //     SCORES (placeholder)
+                // -------------------------
+                else if (currentState == GameState::Scores)
+                {
+                    if (key->scancode == sf::Keyboard::Scancode::Escape)
+                        currentState = GameState::Menu;
+                }
             }
         }
 
-        sf::Time dt = deltaClock.restart();
+        // -------------------------
+        //   LOGIKA GRY
+        // -------------------------
+        sf::Time dt = clock.restart();
 
         if (currentState == GameState::Playing)
         {
             game.update(dt);
         }
 
+        // -------------------------
+        //        RENDER
+        // -------------------------
         window.clear();
 
-        if (currentState == GameState::Menu)
+        switch (currentState)
         {
+        case GameState::Menu:
             menu.draw(window);
-        }
-        else if (currentState == GameState::Playing)
-        {
+            break;
+
+        case GameState::Playing:
             game.render(window);
-        }
-        else if (currentState == GameState::Exiting)
-        {
+            break;
+
+        case GameState::Scores:
+            // Mo¿esz tu coœ narysowaæ
+            break;
+
+        case GameState::Exiting:
             window.close();
+            break;
         }
 
         window.display();

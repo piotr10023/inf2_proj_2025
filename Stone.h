@@ -19,4 +19,6 @@ public:
     bool isDestroyed() const { return m_jestZniszczony; }
 
     void draw(sf::RenderTarget& target) const;
+    int getHP() const { return m_punktyZycia; }
+
 };

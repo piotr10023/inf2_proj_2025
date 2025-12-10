@@ -23,4 +23,7 @@ public:
     float getY() const { return y; }
     float getSzerokosc() const { return szerokosc; }
     float getWysokosc() const { return wysokosc; }
+
+    void setPosition(float px, float py) { x = px; y = py; shape.setPosition(x, y); }
+
 };
